@@ -1,0 +1,14 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <div class="container">
+        <a class="navbar-brand" href="{% url "projects:list" %}"> TaskFlow </a>
+        <div class="d-flex align-items-center">
+            {% if user.is_authenticated  %}
+                <span class="text-light me-4">{{user.email}}<span>
+                <a href="{% url 'account_logout' %}" class="btn btn-outline-light btn-sm">Log Out</a>
+            {% else %}
+                <a href="{% url 'account_login' %}" class="btn btn-outline-light btn-sm me-2">Log Out</a>
+                <a href="{% url 'account_signup' %}" class="btn btn-light btn-sm">Log Out</a>
+            {% endif %}
+        <div>
+    </div>
+</nav>
