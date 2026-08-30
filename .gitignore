@@ -1,0 +1,85 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+.venv/
+ENV/
+env/
+pythonenv*
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
+*.pot
+*.pyc
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Docker
+.docker/
+*.tar
+*.img
+
+# Frontend / templates / Bootstrap
+# якщо фронтенд буде в templates, а CSS/JS з Bootstrap через CDN або локальні файли
+# то потім можна прибрати окремі правила за потреби
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Static / compiled assets
+static/
+assets/
+public/
+coverage/
+
+# IDE / editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Coverage / test / build
+htmlcov/
+.coverage
+.coverage.*
+.pytest_cache/
+.tox/
+.nox/
+.mypy_cache/
+.pyre
+.pytype/
+
+# Pip / packaging
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Local DB / dumps
+*.sql
+*.dump
+
+# Optional: if using Docker Compose volumes for app data
+postgres_data/
+redis_data/
