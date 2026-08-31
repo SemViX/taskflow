@@ -36,6 +36,12 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
         self.object = form.save()
         return render(self.request, "tasks/_task_row.html", {"task": self.object})
 
+    def form_invalid(self, form):
+        response = super().form_invalid(form)
+        response["HX-Retarget"] = "#task-new"
+        response["HX-Reswap"] = "outerHTML"
+        return response
+
 class TaskUpdateView(TaskQuerysetMixin, UpdateView):
     model = Task
     form_class = TaskForm
@@ -48,7 +54,7 @@ class TaskUpdateView(TaskQuerysetMixin, UpdateView):
 class TaskDetailPartialView(TaskQuerysetMixin, DetailView):
     def get(self, request, pk):
         task = get_object_or_404(self.get_queryset(), pk=pk)
-        return render(request, "tasks/_task_row", {"task":task})
+        return render(request, "tasks/_task_row.html", {"task": task})
 
 class TaskDeleteView(TaskQuerysetMixin, DeleteView):
     model = Task

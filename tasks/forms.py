@@ -9,14 +9,20 @@ class TaskForm(forms.ModelForm):
         model = Task
         fields = ["title", "priority", "deadline"]
         widgets = {
-            "title": forms.TextInput(attrs={
-                "placeholder": "Task title",
-            }),
-            "priority": forms.Select(),
-            "deadline": forms.DateInput(attrs={
-                "type": "date",
-            }),
+            "title": forms.TextInput(
+                attrs={
+                    "placeholder": "Task title",
+                    "required": True,
+                    "maxlength": Task._meta.get_field("title").max_length,
+                }
+            ),
+            "priority": forms.Select(attrs={"required": True}),
+            "deadline": forms.DateInput(attrs={"type": "date"}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["deadline"].widget.attrs["min"] = timezone.localdate().isoformat()
 
     def clean_title(self):
         title = self.cleaned_data["title"].strip()

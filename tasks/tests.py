@@ -55,6 +55,13 @@ class TaskFormTests(TestCase):
         form = TaskForm(data=data)
         self.assertFalse(form.is_valid())
 
+    def test_deadline_input_disallows_past_dates_in_the_browser(self):
+        form = TaskForm()
+
+        self.assertEqual(
+            form.fields["deadline"].widget.attrs["min"], timezone.localdate().isoformat()
+        )
+
 
 class TaskViewTests(TestCase):
     def setUp(self):
@@ -76,6 +83,19 @@ class TaskViewTests(TestCase):
         response = self.client.post(reverse('tasks:create', kwargs={'project_id': self.project1.id}), data=data)
         self.assertEqual(response.status_code, 200)
         self.assertTrue(Task.objects.filter(project=self.project1, title='New task').exists())
+
+    def test_invalid_create_retargets_the_task_form(self):
+        self.client.login(username='user1', password='pass123')
+
+        response = self.client.post(
+            reverse('tasks:create', kwargs={'project_id': self.project1.id}),
+            data={'title': ' ', 'priority': Task.Priority.HIGH, 'deadline': ''},
+            HTTP_HX_REQUEST='true',
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.headers['HX-Retarget'], '#task-new')
+        self.assertContains(response, 'Title cannot be empty.')
     
     def test_update_own_task(self):
         self.client.login(username='user1', password='pass123')
@@ -84,6 +104,14 @@ class TaskViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.task1.refresh_from_db()
         self.assertEqual(self.task1.title, 'Updated')
+
+    def test_task_detail_partial_renders(self):
+        self.client.login(username='user1', password='pass123')
+
+        response = self.client.get(reverse('tasks:detail', kwargs={'pk': self.task1.id}))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, self.task1.title)
     
     def test_delete_own_task(self):
         self.client.login(username='user1', password='pass123')

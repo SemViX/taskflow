@@ -2,10 +2,19 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
 
+from .forms import ProjectForm
 from .models import Project
 
 
 User = get_user_model()
+
+
+class ProjectFormTests(TestCase):
+    def test_rejects_an_invalid_color(self):
+        form = ProjectForm(data={"title": "My project", "color": "red"})
+
+        self.assertFalse(form.is_valid())
+        self.assertIn("color", form.errors)
 
 
 class ProjectListViewTests(TestCase):
