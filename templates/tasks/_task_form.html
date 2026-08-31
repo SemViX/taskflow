@@ -1,13 +1,13 @@
 {% load widget_tweaks %}
-<div id="task-{% if task.pk %}{{ task.pk }}{% else %}new{% endif %}" class="list-group-item">
+<div id="task-{% if task.pk %}{{ task.pk }}{% else %}new{% endif %}" class="list-group-item task-form">
     <form
         {% if task.pk %}
             hx-post="{% url 'tasks:edit' task.pk %}"
             hx-target="#task-{{ task.pk }}"
         {% else %}
             hx-post="{% url 'tasks:create' project.pk %}"
-            hx-target="#task-list-{{ project.pk }}"
-            hx-swap="beforeend"
+            hx-target="#task-add-{{ project.pk }}"
+            hx-swap="beforebegin"
             hx-on::after-request="if (event.detail.successful) this.closest('#task-new').remove()"
         {% endif %}
         hx-swap="outerHTML"
@@ -39,8 +39,8 @@
             </div>
         </div>
 
-        <div class="d-flex gap-2">
-            <button type="submit" class="btn btn-primary btn-sm">
+        <div class="d-flex flex-wrap gap-2">
+            <button type="submit" class="btn btn-primary btn-sm px-3">
                 {% if task.pk %}Save{% else %}Create{% endif %}
             </button>
             <button

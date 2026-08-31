@@ -1,12 +1,16 @@
-<div id="task-list-{{project.id}}">
+<div id="task-list-{{ project.id }}" class="list-group list-group-flush task-list">
     {% for task in project.tasks.all %}
         {% include "tasks/_task_row.html" %}
     {% endfor %}
-    <div
-        hx-get="{% url 'tasks:create' project.pk %}"
-        hx-target="#task-list-{{project.pk}}"
-        hx-swap="beforeend"
-    >
-        <button class="btn btn-sm btn-outline-primary mt-2">+ Add task</button>
+    <div id="task-add-{{ project.pk }}" class="pt-3">
+        <button
+            type="button"
+            class="btn btn-sm btn-outline-primary w-100"
+            hx-get="{% url 'tasks:create' project.pk %}"
+            hx-target="#task-add-{{ project.pk }}"
+            hx-swap="beforebegin"
+        >
+            + Add task
+        </button>
     </div>
 </div>
