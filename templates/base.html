@@ -17,7 +17,14 @@
     {% include "partials/_navbar.html" %}
     
     <main class="container">
-        {% include "partials/_messages.html" %}
+        <div
+            id="messages-container"
+            hx-get="{% url 'projects:messages' %}"
+            hx-trigger="messagesChanged from:body"
+            hx-swap="innerHTML"
+        >
+            {% include "partials/_messages.html" %}
+        </div>
 
         {% block content %}{% endblock content %}
     </main>

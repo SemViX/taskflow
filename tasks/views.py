@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from projects.models import Project
 from django.views.generic import CreateView, UpdateView, DetailView, DeleteView, View
@@ -34,12 +35,17 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.project = self.project
         self.object = form.save()
-        return render(self.request, "tasks/_task_row.html", {"task": self.object})
+        messages.success(self.request, "Task created.")
+        response = render(self.request, "tasks/_task_row.html", {"task": self.object})
+        response["HX-Trigger"] = "messagesChanged"
+        return response
 
     def form_invalid(self, form):
+        messages.error(self.request, "Please correct the task form errors.")
         response = super().form_invalid(form)
         response["HX-Retarget"] = "#task-new"
         response["HX-Reswap"] = "outerHTML"
+        response["HX-Trigger"] = "messagesChanged"
         return response
 
 class TaskUpdateView(TaskQuerysetMixin, UpdateView):
@@ -49,7 +55,16 @@ class TaskUpdateView(TaskQuerysetMixin, UpdateView):
 
     def form_valid(self, form):
         self.object = form.save()
-        return render(self.request, "tasks/_task_row.html", {"task": self.object})
+        messages.success(self.request, "Task updated.")
+        response = render(self.request, "tasks/_task_row.html", {"task": self.object})
+        response["HX-Trigger"] = "messagesChanged"
+        return response
+
+    def form_invalid(self, form):
+        messages.error(self.request, "Please correct the task form errors.")
+        response = super().form_invalid(form)
+        response["HX-Trigger"] = "messagesChanged"
+        return response
 
 class TaskDetailPartialView(TaskQuerysetMixin, DetailView):
     def get(self, request, pk):
@@ -61,15 +76,20 @@ class TaskDeleteView(TaskQuerysetMixin, DeleteView):
 
     def post(self, request, *args, **kwargs):
         self.get_object().delete()
-        return HttpResponse()
+        messages.success(request, "Task deleted.")
+        return HttpResponse(headers={"HX-Trigger": "messagesChanged"})
     
     def delete(self, request, *args, **kwargs):
         self.get_object().delete()
-        return HttpResponse()
+        messages.success(request, "Task deleted.")
+        return HttpResponse(headers={"HX-Trigger": "messagesChanged"})
 
 class TaskToggleDoneView(TaskQuerysetMixin, View):
     def post(self, request, pk):
         task = get_object_or_404(self.get_queryset(), pk=pk)
         task.is_done = not task.is_done
         task.save(update_fields=["is_done"])
-        return render(request, "tasks/_task_row.html", {"task":task})
+        messages.success(request, "Task marked as done." if task.is_done else "Task marked as active.")
+        response = render(request, "tasks/_task_row.html", {"task": task})
+        response["HX-Trigger"] = "messagesChanged"
+        return response
