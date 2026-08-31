@@ -1,0 +1,11 @@
+{% extends "allauth/layouts/base.html" %}
+{% block title %}Log out — TaskFlow{% endblock %}
+{% block inner_content %}
+<h2 class="mb-4">Log out</h2>
+<p>Are you sure you want to log out?</p>
+
+<form method="post" action="{% url 'account_logout' %}">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger w-100">Log out</button>
+</form>
+{% endblock %}

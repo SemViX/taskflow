@@ -121,7 +121,7 @@ ACCOUNT_LOGIN_METHODS = {"email"}
 ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
 ACCOUNT_EMAIL_VERIFICATION = "none"
 
-# LOGIN_REDIRECT_URL = "projects:list"
+LOGIN_REDIRECT_URL = "projects:list"
 ACCOUNT_LOGOUT_REDIRECT_URL = "account_login"
 
 # Password validation
@@ -158,3 +158,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+ACCOUNT_FORMS = {
+    "login": "accounts.forms.StyledLoginForm",
+    "signup": "accounts.forms.StyledSignupForm",
+}
