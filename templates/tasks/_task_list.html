@@ -1,0 +1,12 @@
+<div id="task-list-{{project.id}}">
+    {% for task in project.tasks.all %}
+        {% include "tasks/_task_row.html" %}
+    {% endfor %}
+    <div
+        hx-get="{% url 'tasks:create' project.pk %}"
+        hx-target="#task-list-{{project.pk}}"
+        hx-swap="beforeend"
+    >
+        <button class="btn btn-sm btn-outline-primary mt-2">+ Add task</button>
+    </div>
+</div>

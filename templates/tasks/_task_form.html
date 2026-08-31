@@ -1,0 +1,61 @@
+{% load widget_tweaks %}
+<div id="task-{% if task.pk %}{{ task.pk }}{% else %}new{% endif %}" class="list-group-item">
+    <form
+        {% if task.pk %}
+            hx-post="{% url 'tasks:edit' task.pk %}"
+            hx-target="#task-{{ task.pk }}"
+        {% else %}
+            hx-post="{% url 'tasks:create' project.pk %}"
+            hx-target="#task-list-{{ project.pk }}"
+            hx-swap="beforeend"
+            hx-on::after-request="if (event.detail.successful) this.closest('#task-new').remove()"
+        {% endif %}
+        hx-swap="outerHTML"
+    >
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label for="{{ form.title.id_for_label }}" class="form-label">Task title</label>
+            {{ form.title|add_class:"form-control" }}
+            {% if form.title.errors %}
+                <div class="text-danger small mt-1">{{ form.title.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="row g-2 mb-3">
+            <div class="col-md-6">
+                <label for="{{ form.priority.id_for_label }}" class="form-label">Priority</label>
+                {{ form.priority|add_class:"form-select" }}
+                {% if form.priority.errors %}
+                    <div class="text-danger small mt-1">{{ form.priority.errors.0 }}</div>
+                {% endif %}
+            </div>
+            <div class="col-md-6">
+                <label for="{{ form.deadline.id_for_label }}" class="form-label">Deadline</label>
+                {{ form.deadline|add_class:"form-control" }}
+                {% if form.deadline.errors %}
+                    <div class="text-danger small mt-1">{{ form.deadline.errors.0 }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary btn-sm">
+                {% if task.pk %}Save{% else %}Create{% endif %}
+            </button>
+            <button
+                type="button"
+                class="btn btn-outline-secondary btn-sm"
+                {% if task.pk %}
+                    hx-get="{% url 'tasks:detail' task.pk %}"
+                    hx-target="#task-{{ task.pk }}"
+                    hx-swap="outerHTML"
+                {% else %}
+                    onclick="this.closest('#task-new').remove()"
+                {% endif %}
+            >
+                Cancel
+            </button>
+        </div>
+    </form>
+</div>
