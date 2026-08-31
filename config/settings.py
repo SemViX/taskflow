@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
 
     "projects",
+    "tasks",
 ]
 
 SITE_ID = 1
