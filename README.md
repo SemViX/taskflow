@@ -41,6 +41,9 @@ Create a `.env` file in the project root. Do not commit it.
 POSTGRES_DB=taskflow
 POSTGRES_USER=taskflow
 POSTGRES_PASSWORD=change-me
+SECRET_KEY=replace-with-a-long-random-secret
+DEBUG=True
+ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0
 ```
 
 ### 2. Build and start the application
