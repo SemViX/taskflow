@@ -5,7 +5,6 @@ from django.urls import reverse
 from .forms import ProjectForm
 from .models import Project
 
-
 User = get_user_model()
 
 
@@ -35,7 +34,7 @@ class ProjectListViewTests(TestCase):
         own_project = Project.objects.create(owner=self.user, title="My Project")
         other_user = User.objects.create_user(username="other", password="testpass123")
         Project.objects.create(owner=other_user, title="Other Project")
-        
+
         response = self.client.get(reverse("projects:list"))
         self.assertContains(response, own_project.title)
         self.assertNotContains(response, "Other Project")
@@ -51,7 +50,9 @@ class ProjectCreateViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_create_project(self):
-        response = self.client.post(reverse("projects:create"), {"title": "New Project", "color": "#ff0000"})
+        response = self.client.post(
+            reverse("projects:create"), {"title": "New Project", "color": "#ff0000"}
+        )
         self.assertEqual(response.status_code, 200)
         project = Project.objects.get(title="New Project")
         self.assertEqual(project.owner, self.user)
@@ -67,7 +68,11 @@ class ProjectUpdateViewTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username="tester", password="testpass123")
         self.client.force_login(self.user)
-        self.project = Project.objects.create(owner=self.user, title="Old Project", color="#000000",)
+        self.project = Project.objects.create(
+            owner=self.user,
+            title="Old Project",
+            color="#000000",
+        )
 
     def test_update_project(self):
         response = self.client.post(
@@ -81,21 +86,20 @@ class ProjectUpdateViewTests(TestCase):
             },
             HTTP_HX_REQUEST="true",
         )
-    
+
         self.assertEqual(response.status_code, 200)
-    
+
         self.project.refresh_from_db()
-    
+
         self.assertEqual(self.project.title, "Updated Project")
         self.assertEqual(self.project.color, "#00ff00")
 
     def test_cannot_update_other_users_project(self):
         other_user = User.objects.create_user(username="other", password="testpass123")
         other_project = Project.objects.create(owner=other_user, title="Other Project")
-        
+
         response = self.client.post(
-            reverse("projects:update", kwargs={"pk": other_project.pk}),
-            {"title": "Hacked Project"}
+            reverse("projects:update", kwargs={"pk": other_project.pk}), {"title": "Hacked Project"}
         )
         self.assertEqual(response.status_code, 404)
         other_project.refresh_from_db()
@@ -116,7 +120,7 @@ class ProjectDeleteViewTests(TestCase):
     def test_cannot_delete_other_users_project(self):
         other_user = User.objects.create_user(username="other", password="testpass123")
         project = Project.objects.create(owner=other_user, title="Other Project")
-        
+
         response = self.client.post(reverse("projects:delete", kwargs={"pk": project.pk}))
         self.assertEqual(response.status_code, 404)
         self.assertTrue(Project.objects.filter(pk=project.pk).exists())
@@ -136,6 +140,6 @@ class ProjectDetailViewTests(TestCase):
     def test_cannot_view_other_users_project(self):
         other_user = User.objects.create_user(username="other", password="testpass123")
         other_project = Project.objects.create(owner=other_user, title="Other Project")
-        
+
         response = self.client.get(reverse("projects:detail", kwargs={"pk": other_project.pk}))
         self.assertEqual(response.status_code, 404)

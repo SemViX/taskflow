@@ -1,0 +1,31 @@
+[tool.ruff]
+line-length = 100
+target-version = "py313" 
+
+exclude = [
+    "migrations",
+    ".venv",
+    "venv",
+]
+
+[tool.ruff.lint]
+select = [
+    "E",   
+    "F",  
+    "I",   
+    "DJ",  
+    "UP",  
+    "B",   
+    "C4",  
+]
+
+ignore = [
+    "DJ01",  
+]
+
+[tool.ruff.lint.per-file-ignores]
+"*/settings/*.py" = ["F401", "F403"] 
+"*/migrations/*.py" = ["E501"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["accounts", "config", "projects", "tasks"]

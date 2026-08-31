@@ -1,13 +1,12 @@
-from django.db import models
 from django.conf import settings
+from django.db import models
 from django.urls import reverse
+
 
 # Create your models here.
 class Project(models.Model):
     owner = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name="projects"
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="projects"
     )
     title = models.CharField(max_length=100)
     color = models.CharField(
@@ -26,4 +25,3 @@ class Project(models.Model):
 
     def get_absolute_url(self):
         return reverse("projects:list")
-    
