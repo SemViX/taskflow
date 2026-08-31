@@ -17,6 +17,9 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
     template_name = "tasks/_task_form.html"
 
     def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return self.handle_no_permission()
+        
         self.project = get_object_or_404(
             Project, pk=kwargs["project_id"], owner=request.user
         )
@@ -58,7 +61,7 @@ class TaskDeleteView(TaskQuerysetMixin, DeleteView):
         self.get_object().delete()
         return HttpResponse()
 
-class TaskTogleDoneView(TaskQuerysetMixin, View):
+class TaskToggleDoneView(TaskQuerysetMixin, View):
     def post(self, request, pk):
         task = get_object_or_404(self.get_queryset(), pk=pk)
         task.is_done = not task.is_done
