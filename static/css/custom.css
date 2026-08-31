@@ -1,0 +1,21 @@
+
+.card-header {
+    font-weight: 600;
+}
+
+.task-row.done {
+    text-decoration: line-through;
+    opacity: 0.6;
+}
+
+.priority-high {
+    border-left: 4px solid #dc3545;
+}
+
+.priority-medium {
+    border-left: 4px solid #ffc107;
+}
+
+.priority-low {
+    border-left: 4px solid #6c757d;
+}

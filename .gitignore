@@ -40,7 +40,6 @@ yarn-error.log*
 pnpm-debug.log*
 
 # Static / compiled assets
-static/
 assets/
 public/
 coverage/
