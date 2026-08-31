@@ -1,0 +1,57 @@
+{% load widget_tweaks %}
+<div id="project-form-{% if project.pk %}{{ project.pk }}{% else %}new{% endif %}" class="{% if project.pk %}col {% endif %}card mb-3">
+    <div class="card-body">
+        <form
+            {% if project.pk %}
+                hx-post="{% url 'projects:update' project.pk %}"
+                hx-target="#project-form-{{ project.pk }}"
+            {% else %}
+                hx-post="{% url 'projects:create' %}"
+                hx-target="#project-container"
+                hx-swap="beforeend"
+                hx-on::after-request="if (event.detail.successful) this.closest('#project-form-new').remove()"
+            {% endif %}
+            hx-swap="outerHTML"
+        >
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="{{ form.title.id_for_label }}" class="form-label">Project title</label>
+                {{ form.title|add_class:"form-control" }}
+                {% if form.title.errors %}
+                    <div class="text-danger small mt-1">{{ form.title.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <div class="mb-3">
+                <label for="{{ form.color.id_for_label }}" class="form-label">Color</label>
+                {{ form.color|add_class:"form-control form-control-color" }}
+                {% if form.color.errors %}
+                    <div class="text-danger small mt-1">{{ form.color.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary btn-sm">
+                    {% if project.pk %}
+                        Save
+                    {% else %}
+                        Create
+                    {% endif %}
+                </button>
+                <button
+                    type="button"
+                    class="btn btn-outline-secondary btn-sm"
+                    {% if project.pk %}
+                        hx-get="{% url 'projects:detail' project.pk %}"
+                        hx-target="#project-form-{{ project.pk }}"
+                        hx-swap="outerHTML"
+                    {% else %}
+                        onclick="this.closest('#project-form-new').remove()"
+                    {% endif %}
+                >
+                    Cancel
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,31 @@
+<div class="col" id="project-{{ project.id }}">
+    <div class="card h-100">
+        <div class="card-header text-white" style="background-color: {{ project.color }}">
+            <div class="d-flex justify-content-between align-items-center">
+                <strong>{{ project.title }}</strong>
+                <div>
+                    <button
+                        class="btn btn-sm btn-light"
+                        hx-get="{% url 'projects:update' project.pk %}"
+                        hx-target="#project-{{ project.id }}"
+                        hx-swap="outerHTML"
+                    >
+                        Edit
+                    </button>
+                    <button
+                        class="btn btn-sm btn-light"
+                        hx-delete="{% url 'projects:delete' project.pk %}"
+                        hx-target="#project-{{ project.id }}"
+                        hx-swap="delete"
+                        hx-confirm="Delete the project along with the tasks?"
+                    >
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div id="task-list-{{ project.id }}"></div>
+        </div>
+    </div>
+</div>
